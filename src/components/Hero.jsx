@@ -1,7 +1,5 @@
-import { useEffect, useRef, lazy, Suspense } from 'react';
+import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-
-const HeroScene = lazy(() => import('./HeroScene'));
 
 const styles = {
   section: {
@@ -254,9 +252,10 @@ export default function Hero() {
           </a>
         </div>
 
-        <Suspense fallback={null}>
-          <HeroScene />
-        </Suspense>
+        <div style={styles.gradientSide} className="hero-gradient-side">
+          <div ref={gradientRef} style={styles.gradientShape} />
+          <div style={styles.gradientShapeInner} />
+        </div>
       </div>
 
       <div ref={scrollRef} style={styles.scrollIndicator} className="hero-scroll-indicator">
@@ -270,7 +269,7 @@ export default function Hero() {
             grid-template-columns: 1fr !important;
             gap: 2rem !important;
           }
-          .hero-scene-container {
+          .hero-gradient-side {
             display: none !important;
           }
           .hero-scroll-indicator {
