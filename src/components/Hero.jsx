@@ -1,5 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, lazy, Suspense } from 'react';
 import gsap from 'gsap';
+
+const HeroScene = lazy(() => import('./HeroScene'));
 
 const styles = {
   section: {
@@ -82,30 +84,7 @@ const styles = {
     textDecoration: 'none',
   },
   gradientSide: {
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  gradientShape: {
-    width: '100%',
-    aspectRatio: '1 / 1',
-    maxWidth: '520px',
-    borderRadius: '50%',
-    background: 'radial-gradient(ellipse at 30% 40%, #d4b876 0%, #b8944f 30%, #f0ece2 60%, transparent 80%)',
-    filter: 'blur(60px)',
-    opacity: 0.6,
-  },
-  gradientShapeInner: {
-    position: 'absolute',
-    width: '70%',
-    aspectRatio: '1 / 1.2',
-    borderRadius: '40% 60% 50% 50% / 40% 50% 60% 50%',
-    background: 'radial-gradient(ellipse at 50% 50%, #b8944f 0%, #d4b876 40%, transparent 70%)',
-    filter: 'blur(40px)',
-    opacity: 0.4,
-    top: '15%',
-    right: '10%',
+    display: 'none',
   },
   scrollIndicator: {
     position: 'absolute',
@@ -138,7 +117,7 @@ export default function Hero() {
   const subtitleRef = useRef(null);
   const ctaRef = useRef(null);
   const scrollRef = useRef(null);
-  const gradientRef = useRef(null);
+
 
   useEffect(() => {
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
@@ -185,23 +164,13 @@ export default function Hero() {
       },
       '-=0.3'
     )
-    .to(
-      gradientRef.current,
-      {
-        opacity: 0.6,
-        scale: 1,
-        duration: 1.5,
-        ease: 'power2.out',
-      },
-      0.5
-    );
+    ;
 
     // Set initial states
     gsap.set(eyebrowRef.current, { y: 20, opacity: 0 });
     gsap.set(subtitleRef.current, { y: 30, opacity: 0 });
     gsap.set(ctaRef.current, { y: 20, opacity: 0 });
     gsap.set(scrollRef.current, { opacity: 0 });
-    gsap.set(gradientRef.current, { opacity: 0, scale: 0.8 });
 
     // Replay timeline
     tl.play(0);
@@ -252,10 +221,9 @@ export default function Hero() {
           </a>
         </div>
 
-        <div style={styles.gradientSide} className="hero-gradient-side">
-          <div ref={gradientRef} style={styles.gradientShape} />
-          <div style={styles.gradientShapeInner} />
-        </div>
+        <Suspense fallback={null}>
+          <HeroScene />
+        </Suspense>
       </div>
 
       <div ref={scrollRef} style={styles.scrollIndicator} className="hero-scroll-indicator">
@@ -269,7 +237,7 @@ export default function Hero() {
             grid-template-columns: 1fr !important;
             gap: 2rem !important;
           }
-          .hero-gradient-side {
+          .hero-scene-container {
             display: none !important;
           }
           .hero-scroll-indicator {
